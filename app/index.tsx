@@ -7,6 +7,7 @@ import {
   View,
   Text,
   FlatList,
+  Image,
 } from 'react-native'
 
 type Item = {
@@ -30,6 +31,10 @@ const Home = () => {
     setValue('')
   }
 
+  function onDeleteItem(id: string) {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id))
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -39,7 +44,7 @@ const Home = () => {
     >
       <Stack.Screen options={{ title: 'Todo App' }} />
 
-      <View style={{ rowGap: 30, flexDirection: 'column' }}>
+      <View style={{ rowGap: 20, flexDirection: 'column' }}>
         <View
           style={{
             flexDirection: 'row',
@@ -54,11 +59,13 @@ const Home = () => {
               width: '80%',
               borderRadius: 5,
               paddingHorizontal: 4,
+              paddingVertical: 4,
               color: 'black',
             }}
             value={value}
             onChangeText={setValue}
             placeholder="Do dishes..."
+            aria-label="Enter todo item"
           />
           <TouchableOpacity
             style={{
@@ -73,13 +80,60 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{ flexDirection: 'column', rowGap: 5 }}>
+        <View style={{ flexDirection: 'column' }}>
           <FlatList
             data={items}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View>
-                <Text>{item.value}</Text>
+            renderItem={({ item, index }) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  columnGap: 2,
+                  backgroundColor: 'lightblue',
+                  borderRadius: 4,
+                  paddingVertical: 4,
+                  paddingHorizontal: 6,
+                  marginTop: index === 0 ? 0 : 8,
+                }}
+              >
+                <Text style={{ color: 'black', fontWeight: 'bold' }}>
+                  {item.value}
+                </Text>
+                <View style={{ alignItems: 'center', columnGap: 4 }}>
+                  <TouchableOpacity
+                    aria-label="Edit"
+                    onPress={() => onDeleteItem(item.id)}
+                    style={{
+                      backgroundColor: 'red',
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <Image
+                      source={require('../assets/delete.png')}
+                      resizeMode="contain"
+                      style={{ width: 20, height: 20 }}
+                    />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    aria-label="Delete"
+                    onPress={() => onDeleteItem(item.id)}
+                    style={{
+                      backgroundColor: 'red',
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <Image
+                      source={require('../assets/delete.png')}
+                      resizeMode="contain"
+                      style={{ width: 20, height: 20 }}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
